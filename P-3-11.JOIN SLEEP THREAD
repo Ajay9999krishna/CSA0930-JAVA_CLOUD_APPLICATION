@@ -1,0 +1,53 @@
+class MyThread extends Thread {
+    private boolean containsEven = false;
+
+    public void run() {
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i <= 10; i++) {
+            if (i % 2 == 0) {
+                containsEven = true;
+                break;
+            }
+        }
+
+        if (containsEven) {
+            synchronized (this) {
+                try {
+                    System.out.println(Thread.currentThread().getName() + " has even numbers. Putting it to sleep.");
+                    sleep(10000); // Sleep for 10000ms
+                    System.out.println(Thread.currentThread().getName() + " is awake after 10000ms.");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            synchronized (this) {
+                try {
+                    System.out.println(Thread.currentThread().getName() + " does not have even numbers. Putting it to sleep.");
+                    sleep(5000); // Sleep for 5000ms
+                    System.out.println(Thread.currentThread().getName() + " is awake after 5000ms.");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+
+public class JoinSleepThreads {
+    public static void main(String[] args) throws InterruptedException {
+        MyThread thread1 = new MyThread();
+        MyThread thread2 = new MyThread();
+
+        thread1.setName("T1");
+        thread2.setName("T2");
+
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        System.out.println("Main thread ends.");
+    }
+}
