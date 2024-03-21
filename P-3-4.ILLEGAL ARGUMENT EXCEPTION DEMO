@@ -1,0 +1,47 @@
+import java.time.LocalDate;
+
+public class ILLEGALARUGUMENT {
+    public static void main(String[] args) {
+        try {
+            int age = -5;
+            if (age < 0) {
+                throw new IllegalArgumentException("Age cannot be negative");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Caught Illegal Argument Exception: Negative Argument in the method requiring nonnegative values");
+        }
+
+        try {
+            String dayOfWeek = "Blursday";
+            DayOfWeekEnum day = DayOfWeekEnum.valueOf(dayOfWeek);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Caught Illegal Argument Exception: Invalid Enum Constant Passed to a Method");
+        }
+
+        try {
+            int score = 110;
+            if (score < 0 || score > 100) {
+                throw new IllegalArgumentException("Invalid score range");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Caught Illegal Argument Exception: Setting an Invalid Range for a Method Parameter");
+        }
+
+        try {
+            String subjectCode = "";
+            if (subjectCode == null || subjectCode.isEmpty()) {
+                throw new IllegalArgumentException("Subject code cannot be empty or null");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Caught Illegal Argument Exception: Empty or Null String Argument in a Method Requiring Non-Empty Strings");
+        }
+    }
+
+    enum DayOfWeekEnum {
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+    }
+}
+
+
+
+
