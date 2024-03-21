@@ -1,0 +1,103 @@
+import java.util.Random;
+
+class MatrixThread extends Thread {
+    private int[][] matrix;
+    private int rowCount;
+    private int colCount;
+
+    public MatrixThread(int rowCount, int colCount) {
+        this.rowCount = rowCount;
+        this.colCount = colCount;
+        this.matrix = new int[rowCount][colCount];
+    }
+
+    public void run() {
+        Random rand = new Random();
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                matrix[i][j] = rand.nextInt(10); // Random numbers between 0 and 9
+            }
+        }
+        System.out.println(Thread.currentThread().getName() + " has generated a matrix:");
+        printMatrix(matrix);
+    }
+
+    public int[][] getMatrix() {
+        return matrix;
+    }
+
+    private void printMatrix(int[][] matrix) {
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+class CountElementsThread extends Thread {
+    private int[][] matrix;
+    private int elementCount;
+
+    public CountElementsThread(int[][] matrix) {
+        this.matrix = matrix;
+        this.elementCount = 0;
+    }
+
+    public void run() {
+        for (int i = 0; i < matrix.length; i++) {
+            elementCount += matrix[i].length;
+        }
+        System.out.println(Thread.currentThread().getName() + " has counted " + elementCount + " elements.");
+    }
+
+    public int getElementCount() {
+        return elementCount;
+    }
+}
+
+public class MatrixAddition {
+    public static void main(String[] args) throws InterruptedException {
+        MatrixThread t1 = new MatrixThread(3, 3);
+        MatrixThread t2 = new MatrixThread(3, 3);
+        CountElementsThread t4 = new CountElementsThread(t1.getMatrix());
+
+        t1.start();
+        t2.start();
+        t4.start();
+
+        t4.join();
+
+        int totalElements = t4.getElementCount();
+
+        System.out.println("Thread T4 has finished counting the elements in T1 and T2.");
+
+        if (totalElements == 18) {
+            System.out.println("T3 can acquire T1 and T2 to perform matrix addition.");
+            int[][] matrix1 = t1.getMatrix();
+            int[][] matrix2 = t2.getMatrix();
+            int[][] resultMatrix = new int[3][3];
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    resultMatrix[i][j] = matrix1[i][j] + matrix2[i][j];
+                }
+            }
+
+            System.out.println("Resultant matrix after addition:");
+            printMatrix(resultMatrix);
+        } else {
+            System.out.println("Matrix addition cannot be performed as the total number of elements is not equal.");
+        }
+    }
+
+    private static void printMatrix(int[][] matrix) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
