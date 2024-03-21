@@ -1,0 +1,29 @@
+import java.util.Scanner;
+
+class InvalidDecimalNumberException extends Exception {
+    public InvalidDecimalNumberException(String message) {
+        super(message);
+    }
+}
+
+public class CustomExceptionDemo {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Enter a decimal number: ");
+        String input = scanner.nextLine();
+        
+        try {
+            double number = Double.parseDouble(input);
+            if (number < 0 || number > 100) {
+                throw new InvalidDecimalNumberException("Invalid decimal number. It should be between 0 and 100.");
+            }
+            
+            System.out.println("Entered decimal number: " + number);
+        } catch (NumberFormatException e) {
+            System.out.println("Caught Custom Exception: Invalid input. Please enter a valid decimal number.");
+        } catch (InvalidDecimalNumberException e) {
+            System.out.println("Caught Custom Exception: " + e.getMessage());
+        }
+    }
+}
