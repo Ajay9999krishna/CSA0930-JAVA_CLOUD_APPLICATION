@@ -1,0 +1,27 @@
+import java.util.Scanner;
+
+class NonIntegerValueException extends Exception {
+    public NonIntegerValueException(String message) {
+        super(message);
+    }
+}
+
+public class IntegerInputValidation {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Enter an integer value: ");
+        String input = scanner.nextLine();
+        
+        try {
+            int number = Integer.parseInt(input);
+            System.out.println("Entered integer value: " + number);
+        } catch (NumberFormatException e) {
+            try {
+                throw new NonIntegerValueException("Non-integer value entered. Please enter an integer.");
+            } catch (NonIntegerValueException ex) {
+                System.out.println("Caught Custom Exception: " + ex.getMessage());
+            }
+        }
+    }
+}
