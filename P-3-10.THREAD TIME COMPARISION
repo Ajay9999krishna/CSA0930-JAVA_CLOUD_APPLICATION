@@ -1,0 +1,71 @@
+class MyThread extends Thread {
+    private long waitingTime;
+    private long sleepingTime;
+
+    public void run() {
+        long startTime = System.currentTimeMillis();
+        try {
+            Thread.sleep(2000); // Sleeping for 2 seconds
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        long endTime = System.currentTimeMillis();
+        sleepingTime = endTime - startTime;
+
+        synchronized (this) {
+            try {
+                wait(2000); // Waiting for 2 seconds
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            waitingTime = System.currentTimeMillis() - endTime;
+        }
+    }
+
+    public long getWaitingTime() {
+        return waitingTime;
+    }
+
+    public long getSleepingTime() {
+        return sleepingTime;
+    }
+}
+
+public class ThreadTimeComparison {
+    public static void main(String[] args) throws InterruptedException {
+        MyThread thread1 = new MyThread();
+        MyThread thread2 = new MyThread();
+
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        long thread1WaitingTime = thread1.getWaitingTime();
+        long thread2WaitingTime = thread2.getWaitingTime();
+        long thread1SleepingTime = thread1.getSleepingTime();
+        long thread2SleepingTime = thread2.getSleepingTime();
+
+        System.out.println("Thread 1 waiting time: " + thread1WaitingTime + " ms");
+        System.out.println("Thread 2 waiting time: " + thread2WaitingTime + " ms");
+        System.out.println("Thread 1 sleeping time: " + thread1SleepingTime + " ms");
+        System.out.println("Thread 2 sleeping time: " + thread2SleepingTime + " ms");
+
+        if (thread1WaitingTime > thread2WaitingTime) {
+            System.out.println("Thread 1 has longer waiting time.");
+        } else if (thread2WaitingTime > thread1WaitingTime) {
+            System.out.println("Thread 2 has longer waiting time.");
+        } else {
+            System.out.println("Both threads have equal waiting time.");
+        }
+
+        if (thread1SleepingTime > thread2SleepingTime) {
+            System.out.println("Thread 1 has longer sleeping time.");
+        } else if (thread2SleepingTime > thread1SleepingTime) {
+            System.out.println("Thread 2 has longer sleeping time.");
+        } else {
+            System.out.println("Both threads have equal sleeping time.");
+        }
+    }
+}
